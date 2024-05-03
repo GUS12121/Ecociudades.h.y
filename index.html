@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoCiudades</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('fondo.png'); /* Ruta de la imagen de fondo */
+      background-size: cover;
+      background-position: center;
+      height: 95vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      border-radius: 18px;
+    }
+    #gameContainer {
+      max-width: 600px;
+      border-radius: 17px;
+    }
+    #question {
+        
+      font-size: 27px;
+      margin-bottom: 27px;
+      background-color: rgba(20, 85, 63, 0.993);
+      color: rgb(255, 255, 255);
+      border-radius: 16px;
+    }
+    #options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      border-radius: 16px;
+    }
+    .option {
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 16px;
+      
+    }
+    #timer {
+      font-size: 20px;
+      margin-bottom: 20px;
+      border-radius: 16px;
+    }
+    #scores {
+      font-size: 20px;
+      margin-bottom: 20px;
+      border-radius: 16px;
+    }
+    #turnIndicator {
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border-radius: 16px;
+    }
+    .player1Turn {
+      background-color: blue;
+      border-radius: 16px;
+      margin: 10px;
+    }
+    .player2Turn {
+      background-color: red;
+      border-radius: 16px;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <div id="question"></div>
+    <div id="options"></div>
+    <div id="timer">Tiempo restante: <span id="timeLeft">120</span> segundos</div>
+    <div id="scores">Puntuación: Jugador 1: <span id="player1Score">0</span> | Jugador 2: <span id="player2Score">0</span></div>
+    <div id="turnIndicator">Turno de: Jugador 1</div>
+   
+  </div>
+
+  <script>
+    var questions = [
+      { question: "¿Qué es el compostaje?", options: ["Proceso de descomposición de residuos orgánicos", "Reciclaje de vidrio", "Transformación de residuos en energía", "Vertido de residuos"], answer: "Proceso de descomposición de residuos orgánicos" },
+      { question: "¿Cuál de estos materiales es reciclable?", options: ["Plástico", "Aluminio", "Vidrio", "Todos los anteriores"], answer: "Todos los anteriores" },
+      { question: "¿Cuál es una forma de conservar energía en casa?", options: ["Apagar las luces al salir de una habitación", "Dejar los electrodomésticos en modo de espera", "Dejar correr el agua mientras se cepilla los dientes", "Usar la secadora de ropa en lugar de tender la ropa al sol"], answer: "Apagar las luces al salir de una habitación" },
+      { question: "¿Qué es la huella de carbono?", options: ["La cantidad de oxígeno que consumimos", "La cantidad de dióxido de carbono liberada por nuestras actividades", "La cantidad de agua que utilizamos", "La cantidad de árboles que plantamos"], answer: "La cantidad de dióxido de carbono liberada por nuestras actividades" },
+      { question: "¿Cuál es un beneficio de montar en bicicleta en lugar de conducir un automóvil?", options: ["Mayor comodidad", "Menor contaminación del aire", "Mayor velocidad", "Más espacio para transportar cosas"], answer: "Menor contaminación del aire" },
+      { question: "¿Cuál es el componente principal del aire que respiramos?", options: ["Nitrógeno", "Oxígeno", "Dióxido de carbono", "Hidrógeno"], answer: "Oxígeno" },
+      { question: "¿Cuál es una forma de reducir el uso de plástico?", options: ["Usar bolsas de plástico de un solo uso", "Comprar productos envueltos en plástico", "Usar bolsas reutilizables", "Todas las anteriores"], answer: "Usar bolsas reutilizables" },
+      { question: "¿Cuál es un efecto negativo de la deforestación?", options: ["Mayor biodiversidad", "Menor riesgo de inundaciones", "Pérdida de hábitats naturales", "Mayor captura de dióxido de carbono"], answer: "Pérdida de hábitats naturales" },
+      { question: "¿Qué es un ecosistema?", options: ["Una comunidad de organismos vivos y su entorno físico", "Una planta de reciclaje", "Una fábrica de energía solar", "Una reserva natural"], answer: "Una comunidad de organismos vivos y su entorno físico" },
+      { question: "¿Cuál es una forma de reducir el consumo de agua en casa?", options: ["Dejar correr el agua mientras nos lavamos los dientes", "Reparar las fugas de agua", "Usar la lavadora con cargas pequeñas", "Tomar duchas largas"], answer: "Reparar las fugas de agua" }
+    ];
+
+    var currentPlayer = 1;
+    var player1Score = 0;
+    var player2Score = 0;
+    var questionIndex;
+    var timer;
+    var timeLeft = 120; // 2 minutos
+
+    function startGame() {
+      displayQuestion();
+      timer = setInterval(updateTimer, 1000);
+    }
+
+    function displayQuestion() {
+      questionIndex = Math.floor(Math.random() * questions.length);
+      var questionElement = document.getElementById('question');
+      var optionsElement = document.getElementById('options');
+      questionElement.textContent = questions[questionIndex].question;
+      optionsElement.innerHTML = '';
+      questions[questionIndex].options.forEach(function(option, index) {
+        var button = document.createElement('button');
+        button.textContent = option;
+        button.className = 'option';
+        button.addEventListener('click', function() {
+          checkAnswer(option);
+        });
+        optionsElement.appendChild(button);
+      });
+      // Mostrar de quién es el turno
+      var turnIndicator = document.getElementById('turnIndicator');
+      if (currentPlayer === 1) {
+        turnIndicator.textContent = "Turno de: Jugador 1";
+        turnIndicator.className = 'player1Turn';
+      } else {
+        turnIndicator.textContent = "Turno de: Jugador 2";
+        turnIndicator.className = 'player2Turn';
+      }
+    }
+
+    function checkAnswer(selectedOption) {
+      clearInterval(timer);
+      var correctAnswer = questions[questionIndex].answer;
+      if (selectedOption === correctAnswer) {
+        if (currentPlayer === 1) {
+          player1Score++;
+        } else {
+          player2Score++;
+        }
+      }
+      currentPlayer = currentPlayer === 1 ? 2 : 1;
+      updateScores();
+      if (timeLeft > 0) {
+        startGame();
+      }
+    }
+
+    function updateScores() {
+      document.getElementById('player1Score').textContent = player1Score;
+      document.getElementById('player2Score').textContent = player2Score;
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      document.getElementById('timeLeft').textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        displayWinner();
+      }
+    }
+
+    function displayWinner() {
+      var winner;
+      if (player1Score > player2Score) {
+        winner = "¡Jugador 1 gana!";
+      } else if (player2Score > player1Score) {
+        winner = "¡Jugador 2 gana!";
+      } else {
+        winner = "¡Empate!";
+      }
+      alert("¡Tiempo agotado! " + winner);
+    }
+
+    window.onload = function() {
+      startGame();
+      alert("Reciclar es una actividad importante para preservar el medio ambiente. Ayuda a reducir la contaminación y a conservar los recursos naturales. ¡Juega y aprende sobre la importancia de reciclar!");
+    };
+  </script>
+</body>
+</html>
