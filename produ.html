@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tus Productos</title>
+<style>body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('fondo.png'); /* Ruta de la imagen de fondo */
+  }
+  
+  header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .image-section, .video-section {
+    display: block;
+    padding: 50px 20px;
+    text-align: center;
+  }
+  
+  .image-container, .video-container {
+    display: block;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .image-container img {
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+  }
+  
+  .video-container iframe {
+    width: 720px;
+    height: 1080px;
+    margin: 20px;
+  }
+  
+  h2 {
+    color: #333;
+  }
+  
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>PRODUCTOS </h1>
+  </header>
+
+  <section class="image-section">
+    <h2>Cuadernos-hojas personalizables</h2>
+    <div class="image-container">
+      <!-- Aquí se añadirán las imágenes personalizables -->
+      <img src="papel1.png" alt="productos">
+      <img src="papel2.png" alt="productos">
+      <img src="papel3.png" alt="productos">
+    </div>
+  </section>
+
+  <section class="video-section" style="background-image: url('tu_imagen_de_fondo.jpg');">
+    <h2></h2>
+    <div class="video-container">
+      <!-- Aquí se añadirá el video personalizable -->
+      <video controls width="600" height="360">
+        <source src="video.mp4" type="video/mp4">
+        <source src="video2.mp4" type="video/mp4">
+
+
+    </div>
+  </section>
+
+</body>
+</html>
